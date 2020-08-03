@@ -8,51 +8,66 @@ using System.Web.Http;
 
 namespace WebApplication2.ApiControllers
 {
-    public class MstStudentController : ApiController
+    public class MstUserController : ApiController
     {
         Data.SampledbDataContext db = new Data.SampledbDataContext();
 
-        [Authorize, HttpGet, Route("api/student/course/list")]
-        public List<ApiModels.MstCourseModel> ListCourse()
+        [Authorize, HttpGet, Route("api/user/list")]
+        public List<ApiModels.MstUserModel> ListUser()
         {
-            var courses = from d in db.MstCourses
-                          select new ApiModels.MstCourseModel
+            var users = from d in db.MstUser
+                          select new ApiModels.MstUserModel
                           {
                               Id = d.Id,
-                              CourseCode = d.CourseCode,
-                              Course = d.Course
+                              FirstName = d.FirstName,
+                              LastName = d.LastName,
+                              Password = d.Password,
+                              UserTypeId = d.UserTypeId,
+                              AspNetUserId = d.AspNetUserId,
+                              UserName = d.UserName,
+                              Email = d.Email
                           };
 
-            return courses.ToList();
+            return users.ToList();
 
         }
 
-        [Authorize, HttpGet, Route("api/student/course/detail/{id}")]
-        public ApiModels.MstCourseModel DetailCourse(String id)
+        [Authorize, HttpGet, Route("api/user/detail/{id}")]
+        public ApiModels.MstUserModel DetailUser(String id)
         {
-            var course = from d in db.MstCourses
+            var users = from d in db.MstUser
                          where d.Id == Convert.ToInt32(id)
-                         select new ApiModels.MstCourseModel
+                         select new ApiModels.MstUserModel
                          {
-                             Id = d.Id,
-                             CourseCode = d.CourseCode,
-                             Course = d.Course
+                              Id = d.Id,
+                              FirstName = d.FirstName,
+                              LastName = d.LastName,
+                              Password = d.Password,
+                              UserTypeId = d.UserTypeId,
+                              AspNetUserId = d.AspNetUserId,
+                              UserName = d.UserName,
+                              Email = d.Email
                          };
 
-            return course.FirstOrDefault();
+            return users.FirstOrDefault();
         }
 
-        [Authorize, HttpPost, Route("api/course/add")]
-        public HttpResponseMessage AddCourse(ApiModels.MstCourseModel objCourse)
+        [Authorize, HttpPost, Route("api/user/add")]
+        public HttpResponseMessage AddUser(ApiModels.MstUserModel objUser)
         {
             try
             {
-                Data.MstCourse newCourse = new Data.MstCourse
+                Data.MstUser newUser = new Data.MstUser
                 {
-                    CourseCode = objCourse.CourseCode,
-                    Course = objCourse.Course
+                    FirstName = objUser.FirstName,
+                    LastName = objUser.LastName,
+                    Password = objUser.Password,
+                    UserTypeId = objUser.UserTypeId,
+                    AspNetUserId = objUser.AspNetUserId,
+                    UserName = objUser.UserName,
+                    Email = objUser.Email
                 };
-                db.MstCourses.InsertOnSubmit(newCourse);
+                db.MstUser.InsertOnSubmit(newUser);
                 db.SubmitChanges();
 
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -63,20 +78,25 @@ namespace WebApplication2.ApiControllers
             }
         }
 
-        [Authorize, HttpPut, Route("api/course/update/{id}")]
-        public HttpResponseMessage UpdateCourse(ApiModels.MstCourseModel objCourse, String id)
+        [Authorize, HttpPut, Route("api/user/update/{id}")]
+        public HttpResponseMessage UpdateUser(ApiModels.MstUserModel objUser, String id)
         {
             try
             {
-                var course = from d in db.MstCourses
+                var users = from d in db.MstUser
                              where d.Id == Convert.ToInt32(id)
                              select d;
 
-                if (course.Any())
+                if (users.Any())
                 {
-                    var updateCourse = course.FirstOrDefault();
-                    updateCourse.CourseCode = objCourse.CourseCode;
-                    updateCourse.Course = objCourse.Course;
+                    var updateUser = users.FirstOrDefault();
+                    updateUser.FirstName = objUser.FirstName;
+                    updateUser.LastName = objUser.LastName;
+                    updateUser.Password = objUser.Password;
+                    updateUser.UserTypeId = objUser.UserTypeId;
+                    updateUser.AspNetUserId = objUser.AspNetUserId;
+                    updateUser.UserName = objUser.UserName;
+                    updateUser.Email = objUser.Email;
                     db.SubmitChanges();
 
                     return Request.CreateResponse(HttpStatusCode.OK);
@@ -91,25 +111,25 @@ namespace WebApplication2.ApiControllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
-             [Authorize, HttpDelete, Route("api/course/delete/{id}")]
-        public HttpResponseMessage DeleteCourse(String id)
+             [Authorize, HttpDelete, Route("api/user/delete/{id}")]
+        public HttpResponseMessage DeleteUser(String id)
         {
             try
             {
-                var course = from d in db.MstCourses
+                var users = from d in db.MstUser
                              where d.Id == Convert.ToInt32(id)
                              select d;
 
-                if (course.Any())
+                if (users.Any())
                 {
-                    db.MstCourses.DeleteOnSubmit(course.FirstOrDefault());
+                    db.MstUser.DeleteOnSubmit(users.FirstOrDefault());
                     db.SubmitChanges();
 
                     return Request.CreateResponse(HttpStatusCode.OK);
                 }
                 else
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Course data not found!");
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "User data not found!");
                 }
             }
             catch (Exception ex)
