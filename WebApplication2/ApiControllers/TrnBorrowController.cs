@@ -10,14 +10,14 @@ using System.Web.Http;
 
 namespace WebApplication2.ApiControllers
 {
-    public class TrnBorrowController : ApiController
+    public class TrnBorrowerController : ApiController
     {
         Data.SampledbDataContext db = new Data.SampledbDataContext();
 
         [Authorize, HttpGet, Route("api/trnborrow/list")]
-        public List<ApiModels.MstLibraryBookModel> ListLibraryBook()
+        public List<ApiModels.TrnBorrowerModel> ListTrnBorrow()
         {
-            var libbooks = from d in db.MstLibraryBook
+            var borrows = from d in db.TrnBorrow
                           select new ApiModels.MstLibraryBookModel
                           {
                               Id = d.Id,
